@@ -5,16 +5,24 @@ const io = require('socket.io')(http, {
         origin: '*',
     },
 });
-const cors = require('cors');
 
-//user cors
-app.use(cors());
+const port = process.env.PORT || 5000;
 
 app.get('/', (request, response) => {
     response.send(`<h1>Hello World</h1>`);
 });
 
-io.on('connection', (socket) => {
+
+//socket io middleware
+io.use((socket, next) => {
+    const { token } = socket.handshake.auth
+    console.log(token)
+    if (token === 'userToken') {
+        next()
+    } else {
+        next(new Error('Invalid Credential.'))
+    }
+}).on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => {
         console.log('user disconnected');
@@ -22,11 +30,10 @@ io.on('connection', (socket) => {
 
     //event
     socket.on('event', (event) => {
-        console.log(event);
-        io.emit('event', event);
+        socket.broadcast.emit('event', event);
     });
 });
 
-http.listen(5000, () => {
-    console.log(`listing on port ${http.address}`);
+http.listen(port, () => {
+    console.log(`listing on port ${port}`);
 });

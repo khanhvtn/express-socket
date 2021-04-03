@@ -1,31 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+import React, { useEffect, useState } from 'react';
+import socket from './socketIO'
+import { TextField, Typography, Button, Container, Grid, ListItem, ListItemText } from "@material-ui/core";
+import useStyles from './styles'
 
-const SV_ADDRESS = 'http://localhost:5000/';
-const socket = io(SV_ADDRESS);
-
+const initialState = {
+    event: '',
+    listEvent: []
+}
 const App = () => {
-    const [state, setState] = useState({
-        message: '',
-    });
-    const ioRef = useRef();
-    ioRef.current = socket;
+    const [state, setState] = useState(initialState);
+    const css = useStyles();
     useEffect(() => {
-        ioRef.current.on('connect', () => {
-            console.log(socket.id);
-        });
-        ioRef.current.on('event', (event) => {
-            console.log(event);
-        });
-        return ioRef.current.on('disconnect', () => {
+        socket.on('event', (event) => {
+            console.log(event)
+            setState((prevState) => ({ ...prevState, listEvent: [...prevState.listEvent, event] }))
+        })
+        socket.on('connect_error', (error) => {
+            console.log(error.message)
+        })
+
+        return socket.on('disconnect', () => {
             console.log(socket.id);
         });
     }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        ioRef.current.emit('event', state.message);
-        setState((prevState) => ({ ...prevState, message: '' }));
+        socket.emit('event', state.event);
+        setState((prevState) => ({ ...prevState, event: '' }));
     };
     const handleChange = (e) => {
         setState((prevState) => ({
@@ -34,16 +36,36 @@ const App = () => {
         }));
     };
     return (
-        <div className="container">
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="message"
-                    value={state.message}
-                    onChange={handleChange}
-                    type="text"
-                />
-                <input value="send" type="submit" />
-            </form>
+        <div className={css.wrapper}>
+            <Container className={css.container} maxWidth="lg">
+                <Typography className={css.title} variant="h3" gutterBottom>Create Event</Typography>
+                <Grid container justify="center" alignItems="center" spacing={3}>
+                    <Grid item xs={12} sm={4}>
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                label="Event name"
+                                name="event"
+                                value={state.event}
+                                onChange={handleChange}
+                                type="text"
+                                variant="outlined"
+                                fullWidth
+                            />
+                            <Button className={css.btnSubmit} variant="contained" fullWidth color="primary" type="submit">Create</Button>
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                        {state.listEvent.map((event, index) =>
+                            <ListItem key={index}>
+                                <ListItemText
+                                    primary={event}
+                                />
+                            </ListItem>,
+                        )}
+                    </Grid>
+                </Grid>
+
+            </Container>
         </div>
     );
 };
