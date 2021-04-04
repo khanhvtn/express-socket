@@ -6,26 +6,33 @@ import {
     Grid,
     ListItem,
     ListItemText,
+    CircularProgress,
 } from '@material-ui/core';
 import useStyles from './styles';
 import { useHistory, Link } from 'react-router-dom';
 import { createSocket } from '../../socketIO';
+import { useDispatch, useSelector } from 'react-redux'
+import { createEvent, getAllEvents } from '../../actions/event'
 let socket;
 const initialState = {
     event: '',
     listEvent: [],
 };
 const Home = () => {
+    const { event } = useSelector((state) => state)
+    const dispatch = useDispatch();
     const css = useStyles();
     const [state, setState] = useState(initialState);
     const history = useHistory();
     useEffect(() => {
+
+        //fetch events
+        dispatch(getAllEvents())
+
+        //create socket
         socket = createSocket();
         socket.on('event', (event) => {
-            setState((prevState) => ({
-                ...prevState,
-                listEvent: [...prevState.listEvent, event.name],
-            }));
+            dispatch(createEvent(event))
         });
         socket.on('connect_error', (error) => {
             console.log(error.message);
@@ -36,6 +43,11 @@ const Home = () => {
             socket.close();
         };
     }, []);
+
+    //useEffect to set event from store to current state
+    useEffect(() => {
+        setState((prevState) => ({ ...prevState, listEvent: event.events }))
+    }, [event.events])
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.emit('event', state.event);
@@ -53,8 +65,8 @@ const Home = () => {
             <Typography className={css.title} variant="h3" gutterBottom>
                 Create Event
             </Typography>
-            <Grid container justify="center" alignItems="center" spacing={3}>
-                <Grid item xs={12} sm={4}>
+            <Grid container spacing={3}>
+                <Grid item xs={12} sm={3}>
                     <form onSubmit={handleSubmit}>
                         <TextField
                             label="Event name"
@@ -76,10 +88,10 @@ const Home = () => {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={12} sm={8}>
-                    {state.listEvent.map((event, index) => (
+                <Grid item xs={12} sm={9}>
+                    {event.isLoading ? <CircularProgress /> : state.listEvent.map((event, index) => (
                         <ListItem key={index}>
-                            <ListItemText primary={event} />
+                            <ListItemText primary={event.name} />
                         </ListItem>
                     ))}
                 </Grid>

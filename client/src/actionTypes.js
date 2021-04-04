@@ -1,0 +1,3 @@
+export const GET_EVENTS = "GET_EVENTS"
+export const LOADING_EVENT = "LOADING_EVENT"
+export const CREATE_EVENT = "CREATE_EVENT"

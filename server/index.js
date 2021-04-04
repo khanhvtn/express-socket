@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const mongoose = require('mongoose');
+const cors = require('cors')
 const io = require('socket.io')(http, {
     cors: {
         origin: '*',
@@ -10,6 +11,10 @@ const io = require('socket.io')(http, {
 const { eventRoutes } = require('./routes');
 const startSocketIO = require('./socketIO');
 const port = process.env.PORT || 5000;
+
+
+//user cors
+app.use(cors())
 
 //user bodyParser
 app.use(express.urlencoded({ extended: true }))
