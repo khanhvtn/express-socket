@@ -1,4 +1,5 @@
 const { Event } = require('./models')
+const CustomError = require('./class/CustomError')
 const startSocketIO = (io) => {
     //socket io middleware
     io.use((socket, next) => {
@@ -7,7 +8,7 @@ const startSocketIO = (io) => {
         if (token === 'userToken') {
             next();
         } else {
-            next(new Error('Invalid Credential.'));
+            next(new CustomError(403, 'Invalid Credential.'));
         }
     }).on('connection', (socket) => {
         console.log('a user connected');
