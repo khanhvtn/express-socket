@@ -11,8 +11,8 @@ const App = () => {
         <div className={css.wrapper}>
             <Container className={css.container} maxWidth="lg">
                 <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route exact path="/login" component={Auth} />
+                    <Route exact path="/" component={Auth} />
+                    <Route exact path="/home" component={Home} />
                     <Route component={Error} />
                 </Switch>
             </Container>
