@@ -6,18 +6,23 @@ export default makeStyles(() => ({
         minHeight: '100vh',
     },
     input: {
-        marginBottom: '20px',
-        // width: '70%',
-    },
-    btnSubmit: {
-        // width: '70%',
+        marginBottom: '20px'
     },
     form: {
-        width: '400px',
-        padding: '20px',
+        marginTop: '30px'
+    },
+    lockIcon: {
+        fontSize: '3rem'
+    },
+    paper: {
+        width: '300px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        padding: '40px',
     },
+    alert: {
+        marginTop: '20px'
+    }
 }));

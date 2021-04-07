@@ -14,7 +14,7 @@ const userLogin = async (request, response, next) => {
         if (!isValidPassword) return next(new CustomError(403, 'Invalid Password.'))
 
         //if pass validation
-        const token = jwt.sign({ id: user._id }, 'netcp', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, 'netcp', { expiresIn: '1h' });
         response.status(200).json({
             token,
             user
@@ -99,6 +99,16 @@ const getUser = async (request, response, next) => {
         next(new CustomError(500, error.message))
     }
 }
+const checkCurrentUser = async (request, response, next) => {
+    const { token } = request.body
+    try {
+        //check token is expired or note
+        const decodeToken = jwt.verify(token, 'netcp')
+        response.status(200).json(decodeToken)
+    } catch (error) {
+        next(new CustomError(500, error.message))
+    }
+}
 
 module.exports = userControllers = {
     userLogin,
@@ -106,5 +116,6 @@ module.exports = userControllers = {
     userUpdate,
     userDelete,
     getUsers,
-    getUser
+    getUser,
+    checkCurrentUser
 }

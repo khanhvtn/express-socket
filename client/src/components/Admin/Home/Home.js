@@ -10,9 +10,9 @@ import {
 } from '@material-ui/core';
 import useStyles from './styles';
 import { useHistory, Link } from 'react-router-dom';
-import { createSocket } from '../../socketIO';
+import { createSocket } from '../../../socketIO';
 import { useDispatch, useSelector } from 'react-redux'
-import { createEvent, getAllEvents } from '../../actions/event'
+import { createEvent, getAllEvents } from '../../../actions/event'
 let socket;
 const initialState = {
     event: '',
