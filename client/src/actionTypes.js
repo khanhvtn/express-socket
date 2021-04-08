@@ -6,6 +6,7 @@ export const CREATE_EVENT = "CREATE_EVENT"
 //User Action Types
 export const LOADING_USER = "LOADING_USER"
 export const LOGIN_USER = "LOGIN_USER"
+export const LOGOUT_USER = "LOGOUT_USER"
 export const GET_USERS = "GET_USERS"
 export const CHECKING_USER = "CHECKING_USER"
 

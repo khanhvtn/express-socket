@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useStyles from './styles';
 import { Grid, TextField, Button, Paper, Zoom, Typography, Collapse, CircularProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab'
@@ -6,6 +6,7 @@ import { Lock } from "@material-ui/icons";
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../actions/user'
 import { useHistory } from 'react-router-dom'
+import { clearError } from '../../actions/error';
 
 
 const initialState = {
@@ -25,6 +26,11 @@ const Auth = () => {
         e.preventDefault();
         dispatch(login(state, history))
     };
+
+    //clear error store
+    useEffect(()=>{
+        return dispatch(clearError())
+    }, [])
 
     const handleChange = (e) => {
         setState((prevState) => ({

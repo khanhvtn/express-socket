@@ -9,10 +9,12 @@ import {
     CircularProgress,
 } from '@material-ui/core';
 import useStyles from './styles';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { createSocket } from '../../../socketIO';
 import { useDispatch, useSelector } from 'react-redux'
 import { createEvent, getAllEvents } from '../../../actions/event'
+import {ArrowBack} from '@material-ui/icons'
+import { LOGOUT_USER } from '../../../actionTypes';
 let socket;
 const initialState = {
     event: '',
@@ -59,9 +61,16 @@ const Home = () => {
             [e.target.name]: e.target.value,
         }));
     };
+    const handleLogout =()=>{
+        dispatch({
+            type: LOGOUT_USER
+        })
+
+        history.push('/')
+    }
     return (
         <div>
-            <Link to="/login">Login</Link>
+            <Button startIcon={<ArrowBack/>} variant="text" onClick={handleLogout}>Logout</Button>
             <Typography className={css.title} variant="h3" gutterBottom>
                 Create Event
             </Typography>
