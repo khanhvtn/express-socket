@@ -8,7 +8,7 @@ const io = require('socket.io')(http, {
         origin: '*',
     },
 });
-const { eventRoutes, userRoutes } = require('./routes');
+const { eventRoutes, userRoutes, facilityRoutes } = require('./routes');
 const startSocketIO = require('./socketIO');
 const middlewares = require('./middlewares');
 const port = process.env.PORT || 5000;
@@ -32,6 +32,7 @@ mongoose
 //Route
 app.use('/api/event', eventRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/facility', facilityRoutes)
 app.get('/', (request, response) => {
     response.send(`<h1>Hello World</h1>`);
 });
